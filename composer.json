@@ -1,0 +1,20 @@
+{
+  "name": "soisy/devquiz",
+  "description": "Developer quiz",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Pietro Cesati",
+      "email": "info@soisy.it"
+    }
+  ],
+  "require": {
+    "phpunit/phpunit": "^6.1"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Soisy\\": "src/"
+    }
+  }
+}
