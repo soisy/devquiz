@@ -3,7 +3,7 @@
 namespace Soisy\Exceptions;
 
 /**
- * Class Investment
+ * Class InvalidRatingException
  *
  * @package Soisy
  */

@@ -3,7 +3,7 @@
 namespace Soisy;
 
 /**
- * Class Investment
+ * Class Operation
  *
  * @package Soisy
  */
