@@ -22,7 +22,7 @@ Per far girare i test devi lanciare il comando:
 
     ./vendor/bin/phpunit
 
-Quando phpunit mostrerà tutto verde saprai che è arrivato il momento di inviarci il tuo lavoro :-)
+Quando i test saranno verdi e il tuo codice completo, inviaci il link del tuo repository pubblico.
  
 A presto​,
 
