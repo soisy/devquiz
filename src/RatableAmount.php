@@ -3,7 +3,6 @@
 
 namespace Soisy;
 
-
 use Soisy\Exceptions\InvalidAmountException;
 use Soisy\Exceptions\InvalidRatingException;
 
@@ -29,13 +28,13 @@ class RatableAmount
     public function __construct($amount, $rating)
     {
         // Amount must be an positive integer
-        if(! is_int($amount) || $amount <= 0) {
+        if (! is_int($amount) || $amount <= 0) {
             throw new InvalidAmountException();
         }
         $this->amount = $amount;
 
         // Rating must be an integer between 1 and 5
-        if(! is_int($rating) || $rating > 5 || $rating < 1) {
+        if (! is_int($rating) || $rating > 5 || $rating < 1) {
             throw new InvalidRatingException();
         }
         $this->rating = $rating;
