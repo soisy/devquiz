@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/lucasaba/devquiz.svg?branch=master)](https://travis-ci.org/lucasaba/devquiz)
+
 # Soisy Dev Quiz
 
 Ciao, e benvenuto.
