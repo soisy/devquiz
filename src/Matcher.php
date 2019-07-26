@@ -70,6 +70,7 @@ class Matcher
     /**
      * Check if there are any match in the current loan/investment set
      * @TODO: Should it preserve the current matches array ?
+     * @TODO: Can, an investment, match multiple loans if the sum of the loans is greater than the investment ?
      */
     public function run()
     {
