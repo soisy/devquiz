@@ -12,7 +12,7 @@ class HelloCandidateTest extends TestCase
     /**
      * @test
      */
-    public function welcome()
+    public function welcome(): void
     {
         $helloCandidate = new HelloCandidate();
 

@@ -4,6 +4,10 @@ use PHPUnit\Framework\TestCase;
 use Soisy\Investment;
 use Soisy\Loan;
 use Soisy\Matcher;
+use Soisy\ValueObject\Amount;
+use Soisy\ValueObject\Rating;
+use Soisy\ValueObject\LoanId;
+use Soisy\ValueObject\InvestmentId;
 
 /**
  * Class MatcherTest
@@ -14,7 +18,7 @@ class MatcherTest extends TestCase
     /**
      * @test
      */
-    public function createMatcher()
+    public function createMatcher(): void
     {
         $matcher = new Matcher();
 
@@ -24,53 +28,66 @@ class MatcherTest extends TestCase
     /**
      * @test
      */
-    public function addLoan()
+    public function addLoan(): void
     {
-        $loan = new Loan(20000, 4);
+        $loanId = new LoanId(1);
+        $loan = $this->getMockLoan($loanId, new Amount(20000), new Rating(3));
+
         $matcher = new Matcher();
         $matcher->addLoan($loan);
 
-        $this->assertEquals([$loan], $matcher->getLoans());
+        $this->assertEquals([(string)$loanId => $loan], $matcher->getLoans()->getArrayCopy());
     }
 
     /**
      * @test
      */
-    public function addInvestment()
+    public function itShouldNotAddSameLoanTwice(): void
     {
-        $investment = new Investment(20000, 4);
+        $this->expectException(\Soisy\Exceptions\AddException::class);
+
+        $loan = $this->getMockLoan(new LoanId(1), new Amount(20000), new Rating(3));
+
+        $matcher = new Matcher();
+        $matcher->addLoan($loan);
+        $matcher->addLoan($loan);
+    }
+
+    /**
+     * @test
+     */
+    public function addInvestment(): void
+    {
+        $investmentId = new InvestmentId(1);
+        $investment = $this->getMockInvestment($investmentId, new Amount(20000), new Rating(4));
+
         $matcher = new Matcher();
         $matcher->addInvestment($investment);
 
-        $this->assertEquals([$investment], $matcher->getInvestments());
+        $this->assertEquals([(string)$investmentId => $investment], $matcher->getInvestments()->getArrayCopy());
     }
 
     /**
      * @test
      */
-    public function addMatch()
+    public function itShouldNotAddSameInvestmentTwice(): void
     {
-        $investment = new Investment(20000, 4);
-        $loan = new Loan(20000, 4);
+        $this->expectException(\Soisy\Exceptions\AddException::class);
+
+        $investment = $this->getMockInvestment(new InvestmentId(1), new Amount(20000), new Rating(4));
+
         $matcher = new Matcher();
-
-        $matcher->addMatch($loan, $investment);
-
-        $this->assertEquals([
-            [
-                'loan' => $loan,
-                'investment' => $investment,
-            ]
-        ], $matcher->getMatches());
+        $matcher->addInvestment($investment);
+        $matcher->addInvestment($investment);
     }
 
     /**
      * @test
      */
-    public function itShouldMatchOnSameRating()
+    public function itShouldMatchOnSameRating(): void
     {
-        $loan = new Loan(50000, 2);
-        $investment = new Investment(75000, 2);
+        $loan = $this->getMockLoan(new LoanId(1), new Amount(50000), new Rating(2));
+        $investment = $this->getMockInvestment(new InvestmentId(1), new Amount(75000), new Rating(2));
 
         $matcher = new Matcher();
 
@@ -81,22 +98,22 @@ class MatcherTest extends TestCase
 
         $result = $matcher->getMatches();
 
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(1, $result->count());
         $this->assertEquals([
             [
                 'loan'       => $loan,
                 'investment' => $investment,
             ]
-        ], $result);
+        ], $result->getArrayCopy());
     }
 
     /**
      * @test
      */
-    public function itShouldNotMatchIfLoanIsGreaterThanInvestment()
+    public function itShouldNotMatchIfLoanIsGreaterThanInvestment(): void
     {
-        $loan = new Loan(500000, 2);
-        $investment = new Investment(75000, 2);
+        $loan = $this->getMockLoan(new LoanId(1), new Amount(500000), new Rating(2));
+        $investment = $this->getMockInvestment(new InvestmentId(1), new Amount(75000), new Rating(2));
 
         $matcher = new Matcher();
 
@@ -107,16 +124,16 @@ class MatcherTest extends TestCase
 
         $result = $matcher->getMatches();
 
-        $this->assertEquals(0, count($result));
+        $this->assertEquals(0, $result->count());
     }
 
     /**
      * @test
      */
-    public function itShouldNotMatchOnDifferentRating()
+    public function itShouldNotMatchOnDifferentRating(): void
     {
-        $loan = new Loan(50000, 3);
-        $investment = new Investment(75000, 2);
+        $loan = $this->getMockLoan(new LoanId(1), new Amount(500000), new Rating(3));
+        $investment = $this->getMockInvestment(new InvestmentId(1), new Amount(75000), new Rating(2));
 
         $matcher = new Matcher();
 
@@ -127,23 +144,23 @@ class MatcherTest extends TestCase
 
         $result = $matcher->getMatches();
 
-        $this->assertEquals(0, count($result));
+        $this->assertEquals(0, $result->count());
     }
 
     /**
      * @test
      */
-    public function itShouldMatchSeveralLoansAndInvestments()
+    public function itShouldMatchSeveralLoansAndInvestments(): void
     {
-        $loan1 = new Loan(1000, 1);
-        $loan2 = new Loan(750, 2);
-        $loan3 = new Loan(500, 3);
+        $loan1 = $this->getMockLoan(new LoanId(1), new Amount(1000), new Rating(1));
+        $loan2 = $this->getMockLoan(new LoanId(2), new Amount(750), new Rating(2));
+        $loan3 = $this->getMockLoan(new LoanId(3), new Amount(500), new Rating(3));
 
-        $investment1 = new Investment(900, 1);
-        $investment2 = new Investment(1200, 1);
-        $investment3 = new Investment(790, 2);
-        $investment4 = new Investment(500, 4);
-        $investment5 = new Investment(800, 5);
+        $investment1 = $this->getMockInvestment(new InvestmentId(1), new Amount(900), new Rating(1));
+        $investment2 = $this->getMockInvestment(new InvestmentId(2), new Amount(1200), new Rating(1));
+        $investment3 = $this->getMockInvestment(new InvestmentId(3), new Amount(790), new Rating(2));
+        $investment4 = $this->getMockInvestment(new InvestmentId(4), new Amount(500), new Rating(4));
+        $investment5 = $this->getMockInvestment(new InvestmentId(5), new Amount(800), new Rating(5));
 
         $matcher = new Matcher();
         $matcher->addLoan($loan1);
@@ -163,6 +180,28 @@ class MatcherTest extends TestCase
         $this->assertEquals([
             ['loan' => $loan1, 'investment' => $investment2],
             ['loan' => $loan2, 'investment' => $investment3],
-        ], $result);
+        ], $result->getArrayCopy());
+    }
+
+    private function getMockLoan(LoanId $id, Amount $amount, Rating $rating): Loan
+    {
+        /** @var Loan $loan */
+        $loan = $this->prophesize(Loan::class);
+        $loan->getId()->willReturn($id);
+        $loan->getAmount()->willReturn($amount);
+        $loan->getRating()->willReturn($rating);
+
+        return $loan->reveal();
+    }
+
+    private function getMockInvestment(InvestmentId $id, Amount $amount, Rating $rating): Investment
+    {
+        /** @var Investment $investment */
+        $investment = $this->prophesize(Investment::class);
+        $investment->getId()->willReturn($id);
+        $investment->getAmount()->willReturn($amount);
+        $investment->getRating()->willReturn($rating);
+
+        return $investment->reveal();
     }
 }

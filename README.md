@@ -2,9 +2,9 @@
 
 Ciao, e benvenuto.
 
-L'obiettivo di questo quiz è farci vedere chi sei dal punto di vista del codice.
+L'obiettivo di questo quiz è farci vedere tutte le tue qualià dal punto di vista del codice.
  
-Per questo quiz dovrai seguire la strada indicata dai test.
+Per questo quiz dovrai seguire la strada indicata dai test e non solo.
 L'idea è avere due entità che vanno abbinate: investimenti e prestiti.
 Una terza entità si occupa di registrarle e tentare l'abbinamento.
 
@@ -22,7 +22,9 @@ Per far girare i test devi lanciare il comando:
 
     ./vendor/bin/phpunit
 
-Quando i test saranno verdi e il tuo codice completo, inviaci il link del tuo repository pubblico.
+Quando i test saranno verdi e sarai sicuro che la tua implementazione soddisferà tutti i requisiti funzionali, inviaci il link del tuo repository pubblico.
+
+Non dare nulla per scontato e contattaci per ogni dubbio, confronto o chiarimento.
  
 A presto​,
 

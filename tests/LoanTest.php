@@ -2,6 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 use Soisy\Loan;
+use Soisy\ValueObject\Amount;
+use Soisy\ValueObject\Rating;
+use Soisy\ValueObject\LoanId;
 
 /**
  * Class LoanTest
@@ -12,12 +15,16 @@ class LoanTest extends TestCase
     /**
      * @test
      */
-    public function createLoan()
+    public function createLoan(): void
     {
-        $loan = new Loan(100, 1);
+        $loan = new Loan(
+            new LoanId(1),
+            new Amount(100),
+            new Rating(1)
+        );
 
-        $this->assertEquals(100, $loan->getAmount());
-        $this->assertEquals(1, $loan->getRating());
+        $this->assertEquals(100, $loan->getAmount()->getValue());
+        $this->assertEquals(1, $loan->getRating()->getValue());
     }
 
     /**
@@ -26,30 +33,39 @@ class LoanTest extends TestCase
      *
      * @param $validRating
      */
-    public function ratingShouldBeBetween1And5($validRating)
+    public function ratingShouldBeBetween1And5(int $validRating): void
     {
-        $loan = new Loan(100, $validRating);
-        $this->assertEquals($validRating, $loan->getRating());
+        $loan = new Loan(
+            new LoanId(1),
+            new Amount(100),
+            new Rating($validRating)
+        );
+        $this->assertEquals($validRating, $loan->getRating()->getValue());
     }
 
-    public function ratingShouldBeBetween1And5DataProvider()
+    public function ratingShouldBeBetween1And5DataProvider(): array
     {
         return [[1], [2], [3], [4], [5]];
     }
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidRatingException
      * @dataProvider ratingShouldBeGreaterThanZeroDataProviderDataProvider
      *
      * @param $invalidRating
      */
-    public function invalidRatingsShouldRaiseAnException($invalidRating)
+    public function invalidRatingsShouldRaiseAnException(int $invalidRating): void
     {
-        new Loan(100, $invalidRating);
+        $this->expectException(\Soisy\Exceptions\InvalidRatingException::class);
+
+        new Loan(
+            new LoanId(1),
+            new Amount(100),
+            new Rating($invalidRating)
+        );
     }
 
-    public function ratingShouldBeGreaterThanZeroDataProviderDataProvider()
+    public function ratingShouldBeGreaterThanZeroDataProviderDataProvider(): array
     {
         return [[-1], [0], [6], [100]];
     }
@@ -57,27 +73,33 @@ class LoanTest extends TestCase
     /**
      * @test
      */
-    public function amountShouldBePositive()
+    public function amountShouldBePositive(): void
     {
-        $loan = new Loan(100, 1);
-        $this->assertEquals(100, $loan->getAmount());
+        $loan = new Loan(
+            new LoanId(1),
+            new Amount(100),
+            new Rating(1)
+        );
+        $this->assertEquals(100, $loan->getAmount()->getValue());
     }
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidAmountException
      */
-    public function negativeAmountShouldRaiseAnException()
+    public function negativeAmountShouldRaiseAnException(): void
     {
-        new Loan(-100, 1);
+        $this->expectException(\Soisy\Exceptions\InvalidAmountException::class);
+
+        new Loan(new Amount(-100), new Rating(1));
     }
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidAmountException
      */
-    public function zeroAmountShouldRaiseAnException()
+    public function zeroAmountShouldRaiseAnException(): void
     {
-        new Loan(0, 1);
+        $this->expectException(\Soisy\Exceptions\InvalidAmountException::class);
+
+        new Loan(new Amount(0), new Rating(1));
     }
 }
