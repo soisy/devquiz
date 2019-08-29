@@ -22,8 +22,12 @@ Per far girare i test devi lanciare il comando:
 
     ./vendor/bin/phpunit
 
-Quando i test saranno verdi e il tuo codice completo, inviaci il link del tuo repository pubblico.
- 
+Quando i test saranno verdi e il tuo codice completo, fai una commit, la tua implementazione base sarà pronta. 
+
+A questo punto ci piacerebbe vedere come faresti evolvere il codice per migliorarlo, migliorandone il design e/o le funzionalità.
+
+Una volta che ti sentirai soddisfatto del tuo codice, perché rispecchia la pasta di cui sei fatto, inviaci il link del tuo repository pubblico.
+
 A presto​,
 
 il team di Soisy
