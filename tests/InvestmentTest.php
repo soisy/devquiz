@@ -12,7 +12,7 @@ class InvestmentTest extends TestCase
     /**
      * @test
      */
-    public function createInvestment()
+    public function createInvestment(): void
     {
         $investment = new Investment(100, 1);
 
@@ -23,33 +23,30 @@ class InvestmentTest extends TestCase
     /**
      * @test
      * @dataProvider ratingShouldBeBetween1And5DataProvider
-     *
-     * @param $validRating
      */
-    public function ratingShouldBeBetween1And5($validRating)
+    public function ratingShouldBeBetween1And5(int $validRating): void
     {
         $investment = new Investment(100, $validRating);
         $this->assertEquals($validRating, $investment->getRating());
     }
 
-    public function ratingShouldBeBetween1And5DataProvider()
+    public function ratingShouldBeBetween1And5DataProvider(): array
     {
         return [[1], [2], [3], [4], [5]];
     }
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidRatingException
      * @dataProvider ratingShouldBeGreaterThanZeroDataProviderDataProvider
-     *
-     * @param $invalidRating
      */
-    public function invalidRatingsShouldRaiseAnException($invalidRating)
+    public function invalidRatingsShouldRaiseAnException(int $invalidRating): void
     {
+        $this->expectException(\Soisy\Exceptions\InvalidRatingException::class);
+
         new Investment(100, $invalidRating);
     }
 
-    public function ratingShouldBeGreaterThanZeroDataProviderDataProvider()
+    public function ratingShouldBeGreaterThanZeroDataProviderDataProvider(): array
     {
         return [[-1], [0], [6], [100]];
     }
@@ -57,7 +54,7 @@ class InvestmentTest extends TestCase
     /**
      * @test
      */
-    public function amountShouldBePositive()
+    public function amountShouldBePositive(): void
     {
         $investment = new Investment(100, 1);
         $this->assertEquals(100, $investment->getAmount());
@@ -65,19 +62,19 @@ class InvestmentTest extends TestCase
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidAmountException
      */
-    public function negativeAmountShouldRaiseAnException()
+    public function negativeAmountShouldRaiseAnException(): void
     {
+        $this->expectException(\Soisy\Exceptions\InvalidAmountException::class);
         new Investment(-100, 1);
     }
 
     /**
      * @test
-     * @expectedException Soisy\Exceptions\InvalidAmountException
      */
-    public function zeroAmountShouldRaiseAnException()
+    public function zeroAmountShouldRaiseAnException(): void
     {
+        $this->expectException(\Soisy\Exceptions\InvalidAmountException::class);
         new Investment(0, 1);
     }
 }
